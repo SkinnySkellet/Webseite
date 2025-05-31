@@ -32,7 +32,7 @@ jobs:
 
       - name: Deploy the website to server
         run: |
-          sshpass -p "$PASSWORD" rsync -avx -e 'ssh -T' --delete --exclude '.ssh' ready/ $USERNAME@$SERVER:./
+          sshpass -p "$PASSWORD" rsync -avx -e 'ssh -T' --delete --exclude '.ssh' public/ $USERNAME@$SERVER:./
         env:
           SERVER: ${{ secrets.SERVER }}
           USERNAME: ${{ secrets.USERNAME }}
