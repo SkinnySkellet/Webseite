@@ -1,5 +1,6 @@
 +++
-date = '2025-05-31T17:23:18+02:00'
-draft = true
+date = '2025-05-31'
+draft = false
 title = 'Hello Word'
 +++
+Hello World123.
