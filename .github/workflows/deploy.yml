@@ -1,0 +1,39 @@
+name: CI
+run-name: Static site deployment
+on:
+  push:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    environment: deploy
+    steps:
+      - name: Checkout the current branch
+        uses: actions/checkout@v4
+        with:
+          submodules: true
+
+      - name: Install Hugo and sshpass
+        run: sudo apt-get install sshpass hugo -y
+          
+      - name: Build Blog
+        env:
+          TZ: 'Europe/Berlin'
+        run: hugo --minify
+
+      - name: Set up SSH known hosts
+        run: |
+          mkdir -p ~/.ssh
+          touch ~/.ssh/known_hosts
+          ssh-keyscan -H $SERVER >> ~/.ssh/known_hosts
+        env:
+          SERVER: ${{ secrets.SERVER }}
+
+      - name: Deploy the website to server
+        run: |
+          sshpass -p "$PASSWORD" rsync -avx -e 'ssh -T' --delete --exclude '.ssh' ready/ $USERNAME@$SERVER:./
+        env:
+          SERVER: ${{ secrets.SERVER }}
+          USERNAME: ${{ secrets.USERNAME }}
+          PASSWORD: ${{ secrets.PASSWORD }}
